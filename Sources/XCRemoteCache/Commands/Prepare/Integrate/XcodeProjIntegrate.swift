@@ -216,7 +216,7 @@ struct XcodeProjIntegrate: Integrate {
             }
         }
 
-        try xcodeproj.writePBXProj(path: outputPath, override: true, outputSettings: PBXOutputSetting())
+        try xcodeproj.writePBXProj(path: outputPath, override: true, outputSettings: PBXOutputSettings())
 
         try lldbPatcher.enable()
     }
