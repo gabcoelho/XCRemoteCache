@@ -18,8 +18,7 @@
 // under the License.
 
 import Foundation
-
-typealias BuildSettings = [String: Any]
+import XcodeProj
 
 struct BuildSettingsIntegrateAppenderOption: OptionSet {
     let rawValue: Int
@@ -78,8 +77,8 @@ class XcodeProjBuildSettingsIntegrateAppender: BuildSettingsIntegrateAppender {
             setBuildSetting(buildSettings: &result, key: "LDPLUSPLUS", value: wrappers.ldplusplus.path )
         }
 
-        let existingSwiftFlags = result["OTHER_SWIFT_FLAGS"] as? String
-        let existingCFlags = result["OTHER_CFLAGS"] as? String
+        let existingSwiftFlags = result["OTHER_SWIFT_FLAGS"]?.stringValue
+        let existingCFlags = result["OTHER_CFLAGS"]?.stringValue
         var swiftFlags = XcodeSettingsSwiftFlags(settingValue: existingSwiftFlags)
         var clangFlags = XcodeSettingsCFlags(settingValue: existingCFlags)
 
@@ -102,14 +101,14 @@ class XcodeProjBuildSettingsIntegrateAppender: BuildSettingsIntegrateAppender {
     }
 
     private func setBuildSetting(buildSettings: inout BuildSettings, key: String, value: String?, excludedValue: String = "") {
-        buildSettings[key] = value
+        buildSettings[key] = value.map { .string($0) }
         guard value != nil else {
             // no need to exclude as the value will
             return
         }
         // Erase all overrides for a given sdk so a default toolchain is used
         for skippedSDK in sdksExclude {
-            buildSettings["\(key)[sdk=\(skippedSDK)]"] = excludedValue
+            buildSettings["\(key)[sdk=\(skippedSDK)]"] = .string(excludedValue)
         }
     }
 
