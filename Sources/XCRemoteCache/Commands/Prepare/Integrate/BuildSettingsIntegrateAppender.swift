@@ -61,6 +61,8 @@ class XcodeProjBuildSettingsIntegrateAppender: BuildSettingsIntegrateAppender {
         if options.contains(.disableSwiftDriverIntegration) {
             setBuildSetting(buildSettings: &result, key: "SWIFT_USE_INTEGRATED_DRIVER", value: "NO" )
         }
+        setBuildSetting(buildSettings: &result, key: "ENABLE_DEBUG_DYLIB", value: "NO" )
+
         // When generating artifacts, no need to shell-out all compilation commands to our wrappers
         if case .consumer = mode {
             setBuildSetting(buildSettings: &result, key: "CC", value: wrappers.cc.path )
